@@ -1,0 +1,91 @@
+---
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<script>
+			import * as THREE from "three";
+
+			// init
+
+			const camera = new THREE.PerspectiveCamera(
+				70,
+				window.innerWidth / window.innerHeight,
+				0.01,
+				10
+			);
+			camera.position.z = 1;
+
+			const scene = new THREE.Scene();
+			scene.background = null; // Set the scene background to transparent
+
+			const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+			const material = new THREE.MeshNormalMaterial();
+
+			const mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh);
+
+			const renderer = new THREE.WebGLRenderer({
+				antialias: true,
+				alpha: true,
+			}); // Set alpha to true for transparent background
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setAnimationLoop(animation);
+			document.body.appendChild(renderer.domElement);
+
+			// animation
+
+			function animation(time) {
+				mesh.rotation.x = time / 2000;
+				mesh.rotation.y = time / 1000;
+
+				renderer.render(scene, camera);
+			}
+
+			// perspective change on scroll
+
+			const maxFOV = 100; // Adjust this value to set the maximum FOV.
+			const minFOV = 40; // Adjust this value to set the minimum FOV.
+
+			function onScroll() {
+				const scrollPercentage =
+					window.scrollY /
+					(document.body.scrollHeight - window.innerHeight);
+				const newFOV = maxFOV - scrollPercentage * (maxFOV - minFOV);
+				camera.fov = newFOV;
+				camera.updateProjectionMatrix();
+			}
+
+			window.addEventListener("scroll", onScroll, false);
+
+			// Adjust the camera aspect ratio when the window is resized.
+			window.addEventListener("resize", () => {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			});
+		</script>
+		<h1>Astro</h1>
+		<h1>Astro</h1>
+		<h1>Astro</h1>
+	</body>
+</html>
+
+<style>
+	/* Set the canvas to absolute position and full width and height */
+	canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: white;
+	}
+</style>
